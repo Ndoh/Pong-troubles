@@ -1,17 +1,12 @@
-import math
 import pygame
 from sys import exit
 from pygame.locals import *
-
-# sprite_file = "Images/name.jpg"
 
 pygame.init()
 
 screen = pygame.display.set_mode((640, 480), 0, 32)
 
-# sprite = pygame.image.load(sprite_file)
-
-ball_speed_x, ball_speed_y, ball_x, y, y2, ball_y = 133, 170, 320, 20, 20, 240
+ball_speed_x, ball_speed_y, ball_x, y, y2, ball_y = 1, 1, 320, 20, 20, 240
 ball_angle_in_radians = 60
 frame_no = 0
 
@@ -19,7 +14,8 @@ move_y = 0
 move_y2 = 0
 paddle = Rect(20, 20, 20, 100)
 paddle2 = Rect(600, 20, 20, 100)
-clock = pygame.time.Clock()
+
+ball = pygame.Rect(ball_x, ball_y, 20, 20)
 
 while True:
     for event in pygame.event.get():
@@ -73,29 +69,19 @@ while True:
 
     pygame.draw.rect(screen, (0, 0, 0), paddle)
     pygame.draw.rect(screen, (0, 0, 0), paddle2)
-    pygame.draw.circle(screen, (0, 0, 0), (ball_x, ball_y), 20)
+    pygame.draw.ellipse(screen, (0, 0, 0), ball)
 
-    time_passed = clock.tick(1000)
-    time_passed_seconds = time_passed / 1000
-    # time_passed_in_seconds = time_passed/1000
-
-    # distance_moved = time_passed_seconds * ball_speed
-    ball_x += int(time_passed_seconds * ball_speed_x * 5)
-    ball_y += int(time_passed_seconds * ball_speed_y * 5)
-
-    if ball_x > 620:
+    if ball_x > 620 or ball_x < 20:
         ball_speed_x *= -1
 
-    if ball_y > 460:
+    if ball_y > 460 or ball_y < 20:
         ball_speed_y *= -1
 
-    if ball_x < 20:
+    if ball.colliderect(paddle2) or ball.colliderect(paddle):
         ball_speed_x *= -1
 
-    if ball_y < 20:
-        ball_speed_y *= -1
-    print(ball_x, ball_y)
-    if 15 < ball_x < 25 and y+51 > ball_y > y-50:
-        ball_speed_x *= -1
+    ball_x += ball_speed_x
+    ball_y += ball_speed_y
+    ball = pygame.Rect(ball_x, ball_y, 20, 20)
 
     pygame.display.update()
